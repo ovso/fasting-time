@@ -11,6 +11,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.ovso.fastingtime.ui.theme.FastingtimeTheme
@@ -31,18 +35,26 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    var expand by remember { mutableStateOf(false) }
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = "단식 시작 시간")
         DropdownMenu(
-            expanded = false,
-            onDismissRequest = { /*TODO*/ }
+            expanded = expand,
+            onDismissRequest = { /*TODO*/ },
         ) {
-            Text(text = "15 시간 후")
-            Text(text = "16 시간 후")
-            Text(text = "17 시간 후")
+            TextButton(onClick = { expand = !expand }) {
+                Text(text = "15 시간 후")
+            }
+            TextButton(onClick = { expand = !expand }) {
+                Text(text = "16 시간 후")
+            }
+            TextButton(onClick = { expand = !expand }) {
+                Text(text = "17 시간 후")
+            }
+
         }
         Text(text = "단식 종료 시간")
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = { expand = !expand }) {
             Text(text = "남은 시간")
         }
     }
