@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
@@ -45,9 +44,32 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
 
-    var startExpanded by remember { mutableStateOf(false) }
-    var endExpanded by remember { mutableStateOf(false) }
-    var label by remember { mutableStateOf("15 시간 후 알림") }
+    var startTimeExpanded by remember { mutableStateOf(false) }
+    var notifictionDropDownExpanded by remember { mutableStateOf(false) }
+    var notificationLabel by remember { mutableStateOf("") }
+    var startTimeLabel by remember { mutableStateOf("00:00") }
+    val startTimes = listOf(
+        "00:00",
+        "01:00",
+        "02:00",
+        "03:00",
+        "04:00",
+        "05:00",
+        "06:00",
+        "07:00",
+        "08:00",
+        "09:00",
+        "10:00",
+        "11:00",
+        "12:00",
+    )
+    val notificationTimes = listOf(
+        "15시간 후 알림",
+        "16시간 후 알림",
+        "17시간 후 알림",
+        "18시간 후 알림"
+    )
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -61,26 +83,21 @@ fun MainScreen() {
                 .wrapContentSize(Alignment.TopStart)
         ) {
             ElevatedAssistChip(
-                onClick = { startExpanded = true },
-                label = { Text(label) },
+                onClick = { startTimeExpanded = true },
+                label = { Text(startTimeLabel) },
             )
             DropdownMenu(
-                expanded = startExpanded,
-                onDismissRequest = { startExpanded = false }
+                expanded = startTimeExpanded,
+                onDismissRequest = { startTimeExpanded = false }
             ) {
-                DropdownMenuItem(
-                    text = { Text("00:30") },
-                    onClick = { label = "00 시" },
-                )
-                DropdownMenuItem(
-                    text = { Text("00 시") },
-                    onClick = { label = "00 시" },
-                )
-                Divider()
-                DropdownMenuItem(
-                    text = { Text("00 시") },
-                    onClick = { label = "00 시" },
-                )
+                startTimes.forEach {
+                    DropdownMenuItem(
+                        text = { Text(it) },
+                        onClick = {
+                            startTimeLabel = it
+                            startTimeExpanded = false
+                        }
+                    ) }
             }
         }
 
@@ -90,29 +107,25 @@ fun MainScreen() {
                 .wrapContentSize(Alignment.TopStart)
         ) {
             ElevatedAssistChip(
-                onClick = { endExpanded = true },
-                label = { Text(label) },
+                onClick = { notifictionDropDownExpanded = true },
+                label = { Text(notificationLabel) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Notifications, contentDescription = null)
                 }
             )
             DropdownMenu(
-                expanded = endExpanded,
-                onDismissRequest = { endExpanded = false }
+                expanded = notifictionDropDownExpanded,
+                onDismissRequest = { notifictionDropDownExpanded = false }
             ) {
-                DropdownMenuItem(
-                    text = { Text("15 시간 후 알림") },
-                    onClick = { label = "15 시간 후 알림" },
-                )
-                DropdownMenuItem(
-                    text = { Text("16 시간 후 알림") },
-                    onClick = { label = "16 시간 후 알림" },
-                )
-                Divider()
-                DropdownMenuItem(
-                    text = { Text("17 시간 후 알림") },
-                    onClick = { label = "17 시간 후 알림" },
-                )
+                notificationTimes.forEach {
+                    DropdownMenuItem(
+                        text = { Text(it) },
+                        onClick = {
+                            notificationLabel = it
+                            notifictionDropDownExpanded = false
+                        }
+                    )
+                }
             }
         }
     }
