@@ -1,10 +1,14 @@
 package io.github.ovso.fastingtime
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -36,38 +40,45 @@ fun MainScreen() {
     Scaffold(
         topBar = {
             Spacer(modifier = Modifier.height(50.dp))
+        },
+        bottomBar = {
+            Box(
+                modifier = Modifier.fillMaxWidth()                        .imePadding()
+                    .navigationBarsPadding(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    modifier = Modifier
+                        .width(200.dp),
+                    onClick = {
+                        status = !status
+                        ctaBtnText = if (status) "멈춤" else "시작"
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black
+                    )
+                ) {
+                    Text(text = ctaBtnText, style = MaterialTheme.typography.headlineLarge)
+                }
+            }
         }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "공복 시작 시간", style = MaterialTheme.typography.headlineLarge)
             Spacer(modifier = Modifier.height(20.dp))
             TimeInput(
                 modifier = Modifier,
-                state = TimePickerState(0, 0, is24Hour = false)
+                state = TimePickerState(0, 0, is24Hour = true)
             )
             Divider(modifier = Modifier.padding(vertical = 40.dp))
             TimeInput(state = TimePickerState(0, 0, is24Hour = true))
             Text(text = "이후 공복 멈춤", style = MaterialTheme.typography.headlineLarge)
-            Spacer(modifier = Modifier.height(50.dp))
-            Button(
-                modifier = Modifier
-                    .width(200.dp),
-                onClick = {
-                    status =! status
-                    ctaBtnText = if (status) "멈춤" else "시작"
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black
-                )
-            ) {
-                Text(text = ctaBtnText, style = MaterialTheme.typography.headlineLarge)
-            }
         }
     }
 }
