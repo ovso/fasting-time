@@ -101,7 +101,7 @@ fun MainScreen() {
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Text(text = "공복 그만", style = MaterialTheme.typography.headlineLarge)
+        Text(text = "공복 종료", style = MaterialTheme.typography.headlineLarge)
         Box(
             modifier = Modifier
                 .wrapContentSize(Alignment.TopStart)
