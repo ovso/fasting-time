@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        // https://medium.com/@nipunvirat0/how-to-schedule-alarm-in-android-using-alarm-manager-7a1c3b23f1bb
         val alarmScheduler: AlarmScheduler = AlarmSchedulerImpl(this)
         var alarmItem: AlarmItem? = null
 
