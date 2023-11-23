@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import io.github.ovso.fastingtime.alarm.AlarmItem
+import io.github.ovso.fastingtime.alarm.AlarmScheduler
+import io.github.ovso.fastingtime.alarm.AlarmSchedulerImpl
 import io.github.ovso.fastingtime.ui.theme.FastingtimeTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,6 +21,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val alarmScheduler: AlarmScheduler = AlarmSchedulerImpl(this)
+        var alarmItem: AlarmItem? = null
+
         setContent {
             FastingtimeTheme {
                 // A surface container using the 'background' color from the theme
