@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +38,7 @@ fun MainScreen() {
     val context = LocalContext.current
     var ctaBtnText by remember { mutableStateOf("시작") }
     var status by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
     Scaffold(
         topBar = {
             Spacer(modifier = Modifier.height(50.dp))
@@ -59,7 +62,8 @@ fun MainScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(it)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -70,7 +74,10 @@ fun MainScreen() {
                 state = TimePickerState(19, 0, is24Hour = true)
             )
             Divider(modifier = Modifier.padding(vertical = 40.dp))
-            TimeInput(state = TimePickerState(15, 0, is24Hour = true))
+            TimeInput(
+                modifier = Modifier,
+                state = TimePickerState(15, 0, is24Hour = true)
+            )
             Text(text = "이후 공복 멈춤", style = MaterialTheme.typography.headlineLarge)
         }
     }
