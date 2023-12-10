@@ -48,11 +48,13 @@ fun MainScreen() {
     val snackScope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
 
+    var displayTime by remember { mutableStateOf("Set Time") }
+
     Box(propagateMinConstraints = false) {
         Button(
             modifier = Modifier.align(Alignment.Center),
             onClick = { showTimePicker = true }
-        ) { Text("Set Time") }
+        ) { Text(displayTime) }
         SnackbarHost(hostState = snackState)
     }
 
@@ -66,6 +68,7 @@ fun MainScreen() {
                 cal.set(Calendar.MINUTE, state.minute)
                 cal.isLenient = false
                 snackScope.launch {
+                    displayTime = formatter.format(cal.time)
                     snackState.showSnackbar("Entered time: ${formatter.format(cal.time)}")
                 }
                 showTimePicker = false
