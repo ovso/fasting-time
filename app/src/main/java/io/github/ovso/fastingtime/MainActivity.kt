@@ -17,7 +17,6 @@ import io.github.ovso.fastingtime.alarm.AlarmSchedulerImpl
 import io.github.ovso.fastingtime.ui.theme.FastingtimeTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -42,5 +41,5 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewMainActivity() {
-    MainScreen()
+
 }

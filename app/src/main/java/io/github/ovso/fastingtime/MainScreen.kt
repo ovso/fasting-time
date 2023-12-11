@@ -1,95 +1,120 @@
 package io.github.ovso.fastingtime
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Keyboard
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
-import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.isContainer
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-@ExperimentalMaterial3Api
-@Composable
-fun MainScreen() {
-    val context = LocalContext.current
-    var ctaBtnText by remember { mutableStateOf("시작") }
-    var status by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
-    Scaffold(
-        topBar = {
-            Spacer(modifier = Modifier.height(50.dp))
-        },
-        bottomBar = {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding()
-                    .navigationBarsPadding(),
-                shape = RectangleShape,
-                onClick = {
-                    status = !status
-                    ctaBtnText = if (status) "멈춤" else "시작"
-                }
-            ) {
-                Text(text = ctaBtnText, style = MaterialTheme.typography.headlineLarge)
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "공복 시작 시간", style = MaterialTheme.typography.headlineLarge)
-            Spacer(modifier = Modifier.height(20.dp))
-            TimeInput(
-                modifier = Modifier,
-                state = TimePickerState(19, 0, is24Hour = true)
-            )
-            Divider(modifier = Modifier.padding(vertical = 40.dp))
-            TimeInput(
-                modifier = Modifier,
-                state = TimePickerState(15, 0, is24Hour = true)
-            )
-            Text(text = "이후 공복 멈춤", style = MaterialTheme.typography.headlineLarge)
-        }
-    }
-
-    BackHandler {
-        (context as? MainActivity)?.finish()
-    }
-}
+import androidx.compose.ui.zIndex
+import io.github.ovso.fastingtime.ui.picker.TimePickerDialog
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun PreviewMainScreen() {
-    MainScreen()
+@Preview
+fun MainScreen() {
+    var showTimePicker by remember { mutableStateOf(false) }
+    val state = rememberTimePickerState()
+    val formatter = remember { SimpleDateFormat("HH:mm a", Locale.getDefault()) }
+    val snackState = remember { SnackbarHostState() }
+    val showingPicker = remember { mutableStateOf(true) }
+    val snackScope = rememberCoroutineScope()
+    val configuration = LocalConfiguration.current
+
+    Box(propagateMinConstraints = false) {
+        Button(
+            modifier = Modifier.align(Alignment.Center),
+            onClick = { showTimePicker = true }
+        ) { Text("Set Time") }
+        SnackbarHost(hostState = snackState)
+    }
+
+    if (showTimePicker) {
+        TimePickerDialog(
+            title = if (showingPicker.value) { "Select Time " } else { "Enter Time" },
+            onCancel = { showTimePicker = false },
+            onConfirm = {
+                val cal = Calendar.getInstance()
+                cal.set(Calendar.HOUR_OF_DAY, state.hour)
+                cal.set(Calendar.MINUTE, state.minute)
+                cal.isLenient = false
+                snackScope.launch {
+                    snackState.showSnackbar("Entered time: ${formatter.format(cal.time)}")
+                }
+                showTimePicker = false
+            },
+            toggle = {
+                if (configuration.screenHeightDp > 400) {
+                    // Make this take the entire viewport. This will guarantee that Screen readers
+                    // focus the toggle first.
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .semantics {
+                                @Suppress("DEPRECATION")
+                                isContainer = true
+                            }
+                    ) {
+                        IconButton(
+                            modifier = Modifier
+                                // This is a workaround so that the Icon comes up first
+                                // in the talkback traversal order. So that users of a11y
+                                // services can use the text input. When talkback traversal
+                                // order is customizable we can remove this.
+                                .size(64.dp, 72.dp)
+                                .align(Alignment.BottomStart)
+                                .zIndex(5f),
+                            onClick = { showingPicker.value = !showingPicker.value }) {
+                            val icon = if (showingPicker.value) {
+                                Icons.Outlined.Keyboard
+                            } else {
+                                Icons.Outlined.Schedule
+                            }
+                            Icon(
+                                icon,
+                                contentDescription = if (showingPicker.value) {
+                                    "Switch to Text Input"
+                                } else {
+                                    "Switch to Touch Input"
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        ) {
+            if (showingPicker.value && configuration.screenHeightDp > 400) {
+                TimePicker(state = state)
+            } else {
+                TimeInput(state = state)
+            }
+        }
+    }
 }

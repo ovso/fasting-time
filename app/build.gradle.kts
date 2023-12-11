@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
@@ -57,6 +60,9 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.material.icons.extended.android)
+
+    androidTestImplementation(composeBom)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
