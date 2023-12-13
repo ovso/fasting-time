@@ -1,7 +1,10 @@
 package io.github.ovso.fastingtime
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Keyboard
@@ -50,11 +53,19 @@ fun MainScreen() {
 
     var displayTime by remember { mutableStateOf("Set Time") }
 
-    Box(propagateMinConstraints = false) {
-        Button(
-            modifier = Modifier.align(Alignment.Center),
-            onClick = { showTimePicker = true }
-        ) { Text(displayTime) }
+    Box(propagateMinConstraints = true) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Text(text = "공복 시작 시간")
+            Button(
+                onClick = { showTimePicker = true }
+            ) { Text(displayTime) }
+            Spacer(modifier = Modifier.height(50.dp))
+            Text(text = "시간 후 종료")
+            Button(
+                onClick = { showTimePicker = true }
+            ) { Text(displayTime) }
+        }
         SnackbarHost(hostState = snackState)
     }
 
