@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.material.icons.extended.android)
+    implementation(libs.tedpermission.normal)
 
     androidTestImplementation(composeBom)
     testImplementation(libs.junit)
