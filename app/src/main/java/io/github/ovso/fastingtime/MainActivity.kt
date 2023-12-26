@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FastingtimeTheme {
+
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Column {
@@ -140,6 +141,11 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        Button(onClick = {
+                            startActivity(Intent(this@MainActivity, DatePickerActivity::class.java))
+                        }) {
+                            Text(text = "DatePicker 보기")
+                        }
                     }
                 }
             }
